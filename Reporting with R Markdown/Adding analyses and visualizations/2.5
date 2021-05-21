@@ -1,0 +1,67 @@
+<!--Exercise
+Visualizing all projects for one country
+Previously, you created a line plot using the investment_annual_summary. Now, you'll use the data you filtered to create scatterplots that summarize the information about the projects that occurred in Brazil.
+
+Instructions
+100 XP
+In the brazil-investment-projects code chunk, create a scatterplot of the brazil_investment_projects data.
+Plot the date disclosed (date_disclosed) on the x-axis, and total IFC investment (total_investment) on the y-axis.
+Color the plot by status, so that the plot includes information about the status of each project.-->
+
+---
+title: "Investment Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+
+## Datasets 
+
+### Investment Annual Summary
+
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018.
+```{r investment-annual-summary}
+ggplot(investment_annual_summary, aes(x = fiscal_year, y = dollars_in_millions, color = region)) +
+  geom_line() +
+  labs(
+    title = "Investment Annual Summary",
+    x = "Fiscal Year",
+    y = "Dollars in Millions"
+  )
+```
+
+### Investment Projects in Brazil
+
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts.
+```{r brazil-investment-projects}
+brazil_investment_projects <- investment_services_projects %>%
+  filter(country == "Brazil") 
+
+ggplot(brazil_investment_projects, aes(x=date_disclosed, y=total_investment, color=status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  )
+```
+
+### Investment Projects in Brazil in 2018
+
+```{r brazil-investment-projects-2018}
+brazil_investment_projects_2018 <- investment_services_projects %>%
+  filter(country == "Brazil",
+         date_disclosed >= "2017-07-01",
+         date_disclosed <= "2018-06-30") 
+```
+
+

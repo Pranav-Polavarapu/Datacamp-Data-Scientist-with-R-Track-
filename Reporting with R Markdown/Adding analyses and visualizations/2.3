@@ -1,0 +1,61 @@
+<!--Exercise
+Referencing code results in the report
+In this exercise, you'll use summarize() and brazil_investment_projects_2018 to find the total investment amount for all projects in Brazil in the 2018 fiscal year. Then, you'll add text to the report to include the information and reference the code results in the text, so that the calculated amount is printed in the text of the report when you knit the file.
+
+Instructions
+100 XP
+Instructions
+100 XP
+In the brazil-investment-projects-2018 code chunk, create brazil_investment_projects_2018_total by summarizing the data that was filtered for projects in Brazil in the 2018 fiscal year to create a new column, sum_total_investment, that contains the sum of the total_investment amounts for each of the projects.
+Add Brazil and 2018 to the sentence on line 47 to describe the information that was calculated.
+Add a reference to brazil_investment_projects_2018_total in the sentence on line 47, so that the total investment amount for all projects in Brazil in the 2018 fiscal year is included in the knit report-->
+
+---
+title: "Investment Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+
+## Datasets 
+
+### Investment Annual Summary
+
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018.
+```{r investment-annual-summary}
+investment_annual_summary
+```
+
+### Investment Projects in Brazil
+
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts.
+```{r brazil-investment-projects}
+brazil_investment_projects <- investment_services_projects %>%
+  filter(country == "Brazil") 
+```
+
+### Investment Projects in Brazil in 2018
+
+```{r brazil-investment-projects-2018}
+brazil_investment_projects_2018 <- investment_services_projects %>%
+  filter(country == "Brazil",
+         date_disclosed >= "2017-07-01",
+         date_disclosed <= "2018-06-30") 
+
+brazil_investment_projects_2018
+
+brazil_investment_projects_2018_total <- brazil_investment_projects_2018 %>%
+  summarize(sum_total_investment = sum(total_investment, na.rm = TRUE)) 
+```
+
+The total investment amount for all projects in Brazil in the 2018 fiscal year was `r brazil_investment_projects_2018_total` million dollars.
+
+

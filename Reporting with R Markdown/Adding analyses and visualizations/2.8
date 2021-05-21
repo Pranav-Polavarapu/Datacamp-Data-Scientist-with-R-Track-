@@ -1,0 +1,78 @@
+<!--Exercise
+Setting chunk options locally
+When creating a report, you may want to set the chunk options locally so that the figure display in the final report varies. The investment_annual_summary data provides helpful background information, but the focus of the report is on projects in Brazil. In this exercise, you'll modify the chunk options locally so that the plots that display information about projects in Brazil appear slightly larger in the final report than the plot that provides the overview of the Investment Annual Summary data.
+
+Instructions
+100 XP
+Add to the investment-annual-summary chunk so that the output dimensions of the resulting figure is 85%.
+Add to the brazil-investment-projects and brazil-investment-projects-2018 chunks so that the output dimensions of the figures are 95%.-->
+
+---
+title: "Investment Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center', echo = TRUE)
+```
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+
+## Datasets 
+
+### Investment Annual Summary
+
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018.
+```{r investment-annual-summary, out.width = '85%'}
+ggplot(investment_annual_summary, aes(x = fiscal_year, y = dollars_in_millions, color = region)) +
+  geom_line() +
+  labs(
+    title = "Investment Annual Summary",
+    x = "Fiscal Year",
+    y = "Dollars in Millions"
+  )
+```
+
+### Investment Projects in Brazil
+
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts.
+```{r brazil-investment-projects, out.width = '95%'}
+brazil_investment_projects <- investment_services_projects %>%
+  filter(country == "Brazil") 
+
+ggplot(brazil_investment_projects, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  )
+```
+
+### Investment Projects in Brazil in 2018
+
+```{r brazil-investment-projects-2018, out.width = '95%'}
+brazil_investment_projects_2018 <- investment_services_projects %>%
+  filter(country == "Brazil",
+         date_disclosed >= "2017-07-01",
+         date_disclosed <= "2018-06-30") 
+
+ggplot(brazil_investment_projects_2018, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil in 2018",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  ) 
+```
+
+

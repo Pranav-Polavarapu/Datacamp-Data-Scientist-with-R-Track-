@@ -1,0 +1,92 @@
+<!--Exercise
+Modifying the report using include and echo
+The exercises in the course have used include = FALSE to prevent the code and results of the setup and data chunks from appearing in the knit report. Although you won't modify those options, since the code and results from those chunks should be excluded from the report, it's important to note how they impact the final report.
+
+In this exercise, you'll use the echo option to modify whether or not the code appears in the report.
+
+Instructions
+100 XP
+Using echo, add to the global chunk options of the report to exclude the code from all code chunks from appearing in the knit report.-->
+
+---
+title: "Investment Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center',echo=FALSE)
+```
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_region_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/52f5414f6504e0503e86eb1043afa9b3d157fab2/investment_region_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+
+## Datasets 
+### Investment Annual Summary
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each of the following regions for each fiscal year, from 2012 to 2018:
+
+1. East Asia and the Pacific      
+2. Europe and Central Asia        
+3. Latin America and the Caribbean
+4. Middle East and North Africa   
+5. South Asia                     
+6. Sub-Saharan Africa
+
+```{r investment-annual-summary, out.width = '85%', fig.cap = 'Figure 1.1 The Investment Annual Summary for each region for 2012 to 2018.'}
+ggplot(investment_annual_summary, aes(x = fiscal_year, y = dollars_in_millions, color = region)) +
+  geom_line() +
+  labs(
+    title = "Investment Annual Summary",
+    x = "Fiscal Year",
+    y = "Dollars in Millions"
+  )
+```
+
+```{r tables}
+kable(investment_region_summary, col.names = c("Region", "Dollars in Millions"), align = "cc", caption = "Table 1.1 The total investment summary for each region for the 2012 to 2018 fiscal years.")
+```
+
+### Investment Projects in Brazil
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts.
+
+```{r brazil-investment-projects, out.width = '95%', fig.cap = 'Figure 1.2 The Investment Services Projects in Brazil from 2012 to 2018.',echo=FALSE}
+brazil_investment_projects <- investment_services_projects %>%
+  filter(country == "Brazil") 
+
+ggplot(brazil_investment_projects, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  )
+```
+
+### Investment Projects in Brazil in 2018
+The `investment_services_projects` dataset was filtered below to focus on information about each investment project from the 2018 fiscal year, and is referred to as `brazil_investment_projects_2018`. 
+
+```{r brazil-investment-projects-2018, out.width = '95%', fig.cap = 'Figure 1.3 The Investment Services Projects in Brazil in 2018.',echo=FALSE}
+brazil_investment_projects_2018 <- investment_services_projects %>%
+  filter(country == "Brazil",
+         date_disclosed >= "2017-07-01",
+         date_disclosed <= "2018-06-30") 
+
+ggplot(brazil_investment_projects_2018, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil in 2018",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  ) 
+```
+
+

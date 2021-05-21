@@ -1,0 +1,82 @@
+<!--Exercise
+Specifying headers and number sectioning
+Now that you've added a table of contents, you'll modify how it appears in the report and which information it includes. You'll use toc_depth to specify the depth of headers that will be included in the table of contents and number_sections to add section numbering for the headers in the report.
+
+Instructions
+100 XP
+Below the toc field, specify a header depth of 2 for the table of contents using toc_depth.
+Below the toc_depth field, add numbered sections to the document using number_sections.
+Modify the headers in the document by removing one hash from each header, so that the largest header starts with a single hash and the section numbering will start with a 1.-->
+
+---
+title: "Investment Report"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: TRUE
+date: "`r format(Sys.time(), '%d %B %Y')`"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center', echo = TRUE)
+```
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+library(ggplot2)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+# Datasets 
+
+## Investment Annual Summary
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018.
+```{r investment-annual-summary}
+ggplot(investment_annual_summary, aes(x = fiscal_year, y = dollars_in_millions, color = region)) +
+  geom_line() +
+  labs(
+    title = "Investment Annual Summary",
+    x = "Fiscal Year",
+    y = "Dollars in Millions"
+  )
+```
+
+## Investment Projects in Brazil
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts. Projects that do not have an associated investment amount are excluded from the plot.
+
+```{r brazil-investment-projects}
+brazil_investment_projects <- investment_services_projects %>%
+  filter(country == "Brazil") 
+
+ggplot(brazil_investment_projects, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  )
+```
+
+## Investment Projects in Brazil in 2018
+The `investment_services_projects` dataset was filtered below to focus on information about each investment project from the 2018 fiscal year, and is referred to as `brazil_investment_projects_2018`. Projects that do not have an associated investment amount are excluded from the plot.
+
+```{r brazil-investment-projects-2018}
+brazil_investment_projects_2018 <- investment_services_projects %>%
+  filter(country == "Brazil",
+         date_disclosed >= "2017-07-01",
+         date_disclosed <= "2018-06-30") 
+
+ggplot(brazil_investment_projects_2018, aes(x = date_disclosed, y = total_investment, color = status)) +
+  geom_point() +
+  labs(
+    title = "Investment Services Projects in Brazil in 2018",
+    x = "Date Disclosed",
+    y = "Total IFC Investment in Dollars in Millions"
+  ) 
+```
+
+

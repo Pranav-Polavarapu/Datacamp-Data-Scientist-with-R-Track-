@@ -1,0 +1,47 @@
+<!-- Exercise 
+Filtering for a specific country
+Previously, you learned how to filter the data to find out more information about projects that occurred in Indonesia. Now, you'll build a report that provides this information for another country that's included in the investment_services_project data. In this exercise, you'll begin filtering the data to gather information about projects that occurred in Brazil.
+
+Instructions
+100 XP
+Load the dplyr package in the first code chunk on line 10 right after the readr package on line 9.
+In the third code chunk, filter the investment_services_projects data to determine which projects occurred in Brazil.
+Save the result as brazil_investment_projects.
+Label the code chunk brazil-investment-projects.-->
+
+___
+title: "Investment Report"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: html_document
+___
+
+```{r data, include = FALSE}
+library(readr)
+library(dplyr)
+
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+investment_services_projects <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/bcb2e39ecbe521f4b414a21e35f7b8b5c50aec64/investment_services_projects.csv")
+```
+
+
+## Datasets 
+
+### Investment Annual Summary
+
+The `investment_annual_summary` dataset provides a summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018.
+```{r investment-annual-summary}
+investment_annual_summary
+```
+
+### Investment Projects in Brazil
+
+The `investment_services_projects` dataset provides information about each investment project from 2012 to 2018. Information listed includes the project name, company name, sector, project status, and investment amounts.
+```{r brazil-investment-projects}
+brazil_investment_projects<- investment_services_projects %>%
+  filter(country=='Brazil')
+
+brazil_investment_projects
+```
+
+

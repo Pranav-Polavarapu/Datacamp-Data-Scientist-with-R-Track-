@@ -1,0 +1,27 @@
+<!--Exercise
+Creating your first R Markdown file
+Throughout the course, you'll be working on creating an investment report using two datasets from the World Bank IFC. The first dataset, investment_annual_summary, provides the summary of the dollars in millions provided to each region for each fiscal year, from 2012 to 2018. To get started on your report, you first want to print out the dataset.
+
+To create your report, you'll need to edit the Markdown file shown on the right as described in the instructions, then press the green "Knit HTML" button to knit the file and see the resulting HTML file. We'll discuss other output types later in the course.
+
+In each exercise, the first code chunk in the Markdown file will load the readr package and the datasets you'll be using in the exercise. You'll learn more about the details of this code chunk later in the course, but you won't need to modify it for any of the exercises in this chapter.
+
+
+Add the investment_annual_summary dataset to the code chunk in your report.
+-->
+
+
+---
+  title: "Investment Report"
+output: html_document
+---
+  
+  ```{r data, include = FALSE}
+library(readr)
+
+investment_annual_summary <- read_csv("https://assets.datacamp.com/production/repositories/5756/datasets/d0251f26117bbcf0ea96ac276555b9003f4f7372/investment_annual_summary.csv")
+```
+
+```{r}
+investment_annual_summary
+```
