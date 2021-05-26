@@ -1,0 +1,196 @@
+Recognizing ISO 8601 dates
+Which of the following is the correct way to specify the 4th of October 2004 according to ISO 8601?
+Answer: 2004-10-04
+
+_______________
+
+Specifying dates
+As you saw in the video, R doesn't know something is a date unless you tell it. If you have a character string that represents a date in the ISO 8601 standard you can turn it into a Date using the as.Date() function. Just pass the character string (or a vector of character strings) as the first argument.
+
+In this exercise you'll convert a character string representation of a date to a Date object.
+
+Instructions
+100 XP
+We've stored the string "2013-04-03" in a variable called x
+
+Use str() to look at the structure of x and confirm it's just a character string.
+Convert x to a date using as.Date().
+Use str() to look at the structure of x_date and confirm it's a Date.
+Now use as.Date() to store the date April 10, 2014.
+
+
+# The date R 3.0.0 was released
+x <- "2013-04-03"
+
+# Examine structure of x
+str(x)
+
+# Use as.Date() to interpret x as a date
+x_date <- as.Date("2013-04-03")
+
+# Examine structure of x_date
+str(x_date)
+
+# Store April 10 2014 as a Date
+april_10_2014 <- as.Date("2014-04-10")
+
+____
+
+Automatic import
+Sometimes you'll need to input a couple of dates by hand using as.Date() but it's much more common to have a column of dates in a data file.
+
+Some functions that read in data will automatically recognize and parse dates in a variety of formats. In particular the import functions, like read_csv(), in the readr package will recognize dates in a few common formats.
+
+There is also the anytime() function in the anytime package whose sole goal is to automatically parse strings as dates regardless of the format.
+
+Try them both out in this exercise.
+
+Instructions
+100 XP
+Use read_csv() to read in the CSV file rversions.csv as releases.
+Use str() to examine the structure of the date column. Notice it's already a Date object.
+We've loaded anytime and created an object called sep_10_2009. Use the anytime() function to parse sep_10_2009.
+
+# Load the readr package
+library(readr)
+
+# Use read_csv() to import rversions.csv
+releases <- read_csv("rversions.csv")
+
+# Examine the structure of the date column
+str(releases$date)
+
+# Load the anytime package
+library(anytime)
+
+# Various ways of writing Sep 10 2009
+sep_10_2009 <- c("September 10 2009", "2009-09-10", "10 Sep 2009", "09-10-2009")
+
+# Use anytime() to parse sep_10_2009
+anytime(sep_10_2009)
+
+__________________
+
+Plotting
+If you plot a Date on the axis of a plot, you expect the dates to be in calendar order, and that's exactly what happens with plot() or ggplot().
+
+In this exercise you'll make some plots with the R version releases data from the previous exercises using ggplot2. There are two big differences when a Date is on an axis:
+
+If you specify limits they must be Date objects.
+
+To control the behavior of the scale you use the scale_x_date() function.
+
+Have a go in this exercise where you explore how often R releases occur.
+
+Instructions
+100 XP
+Make a plot of releases over time by setting the x argument of the aes() function to the date column.
+Zoom in to the period from 2010 to 2014 by specifying limits from "2010-01-01" to "2014-01-01". Notice these strings need to be wrapped in as.Date() to be interpreted as Date objects.
+Adjust the axis labeling by specifying date_breaks of "10 years" and date_labels of "%Y".
+
+library(ggplot2)
+
+# Set the x axis to the date column
+ggplot(releases, aes(x = date, y = type)) +
+  geom_line(aes(group = 1, color = factor(major)))
+
+# Limit the axis to between 2010-01-01 and 2014-01-01
+ggplot(releases, aes(x = date, y = type)) +
+  geom_line(aes(group = 1, color = factor(major))) +
+  xlim(as.Date("2010-01-01"), as.Date("2014-01-01"))
+
+# Specify breaks every ten years and labels with "%Y"
+ggplot(releases, aes(x = date, y = type)) +
+  geom_line(aes(group = 1, color = factor(major))) +
+  scale_x_date(date_breaks = "10 years", date_labels = "%Y")  
+  
+______________________________
+
+Arithmetic and logical operators
+Since Date objects are internally represented as the number of days since 1970-01-01 you can do basic math and comparisons with dates. You can compare dates with the usual logical operators (<, ==, > etc.), find extremes with min() and max(), and even subtract two dates to find out the time between them.
+
+In this exercise you'll see how these operations work by exploring the last R release. You'll see Sys.date() in the code, it simply returns today's date.
+
+Instructions
+100 XP
+Find the date of the most recent release by calling max() on the date column in releases.
+Find the rows in releases that have the most recent date, by specifying the comparison date == last_release_date in filter()
+Print last_release to see which release this was.
+Calculate how long it has been since the most recent release by subtracting last_release_date from Sys.Date().
+
+# Find the largest date
+last_release_date <- max(releases$date)
+
+# Filter row for last release
+last_release <- filter(releases, date == last_release_date)
+
+# Print last_release
+last_release
+
+# How long since last release?
+Sys.Date() - last_release_date
+
+_________________________________
+
+Getting datetimes into R
+Just like dates without times, if you want R to recognize a string as a datetime you need to convert it, although now you use as.POSIXct(). as.POSIXct() expects strings to be in the format YYYY-MM-DD HH:MM:SS.
+
+The only tricky thing is that times will be interpreted in local time based on your machine's set up. You can check your timezone with Sys.timezone(). If you want the time to be interpreted in a different timezone, you just set the tz argument of as.POSIXct(). You'll learn more about time zones in Chapter 4.
+
+In this exercise you'll input a couple of datetimes by hand and then see that read_csv() also handles datetimes automatically in a lot of cases.
+
+Instructions
+100 XP
+Use as.POSIXct() and an appropriate string to input the datetime corresponding to Oct 1st 2010 at 12:12:00.
+Enter the same datetime again, but now specify the timezone as "America/Los_Angeles".
+Use read_csv() to read in rversions.csv again.
+Examine the structure of the datetime column to verify read_csv() has correctly interpreted it as a datetime.
+
+# Use as.POSIXct to enter the datetime 
+as.POSIXct("2010-10-01 12:12:00")
+
+# Use as.POSIXct again but set the timezone to `"America/Los_Angeles"`
+as.POSIXct("2010-10-01 12:12:00", tz = "America/Los_Angeles")
+
+# Use read_csv to import rversions.csv
+releases <- read_csv("rversions.csv")
+
+# Examine structure of datetime column
+str(releases$datetime)
+
+___________________________
+
+Datetimes behave nicely too
+Just like Date objects, you can plot and do math with POSIXct objects.
+
+As an example, in this exercise you'll see how quickly people download new versions of R, by examining the download logs from the RStudio CRAN mirror.
+
+R 3.2.0 was released at "2015-04-16 07:13:33" so cran-logs_2015-04-17.csv contains a random sample of downloads on the 16th, 17th and 18th.
+
+Instructions
+70 XP
+Use read_csv() to import cran-logs_2015-04-17.csv.
+Print logs to see the information we have on each download.
+Store the R 3.2.0 release time as a POSIXct object.
+Find out when the first request for 3.2.0 was made by filtering for values in the datetime column that are greater than release_time.
+Finally see how downloads increase by creating histograms of download time for 3.2.0 and the previous version 3.1.3. We've provided most of the code, you just need to specify the x aesthetic to be the datetime column.
+
+# Import "cran-logs_2015-04-17.csv" with read_csv()
+logs <- read_csv("cran-logs_2015-04-17.csv")
+
+# Print logs
+logs
+
+# Store the release time as a POSIXct object
+release_time <- as.POSIXct("2015-04-16 07:13:33", tz = "UTC")
+
+# When is the first download of 3.2.0?
+logs %>% 
+  filter(datetime>release_time)
+
+# Examine histograms of downloads by version
+ggplot(logs, aes(x = datetime)) +
+  geom_histogram() +
+  geom_vline(aes(xintercept = as.numeric(release_time)))+
+  facet_wrap(~ r_version, ncol = 1)
+  
